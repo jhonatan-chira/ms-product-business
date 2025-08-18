@@ -1,0 +1,146 @@
+openapi: 3.0.1
+info:
+  title: Product Service API
+  description: API para gestión de productos bancarios (cuentas y créditos)
+  version: 1.0.0
+servers:
+  - url: http://localhost:8083
+    description: Servidor local de desarrollo
+tags:
+  - name: Products
+    description: Operaciones CRUD para los productos
+paths:
+  '/products':
+    get:
+      tags: [ Products ]
+      summary: Listar todos los productos
+      operationId: getProducts
+      responses:
+        '200':
+          description: Lista de cuentas de ahorro
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/GetProductsResponse'
+    post:
+      tags: [ Products ]
+      summary: Crear un nuevo producto
+      operationId: createProduct
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateProductRequest'
+      responses:
+        '201':
+          description: Producto creado
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CreateProductResponse'
+
+
+  '/products/{productId}':
+    put:
+      tags: [ Products ]
+      summary: Actualizar producto
+      operationId: replaceProduct
+      parameters:
+        - name: productId
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ReplaceProductRequest'
+      responses:
+        '204':
+          description: Producto actualizado
+
+  '/products/{productId}/remove':
+    post:
+      tags: [ Products ]
+      summary: Eliminar producto como post
+      operationId: removeProduct
+      parameters:
+        - name: productId
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ReplaceProductRequest'
+      responses:
+        '204':
+          description: Producto eliminado
+
+components:
+  schemas:
+    GetProductsResponse:
+      type: object
+      title: GetProductsResponse
+      allOf:
+        - $ref: '#/components/schemas/Product'
+
+    CreateProductRequest:
+      type: object
+      title: CreateProductRequest
+      allOf:
+        - $ref: '#/components/schemas/Product'
+
+    CreateProductResponse:
+      type: object
+      title: CreateProductRequest
+      properties:
+        productId:
+          type: string
+          minLength: 1
+          maxLength: 32
+          example: 507f1f77bcf86cd799439011
+
+    ReplaceProductRequest:
+      type: object
+      title: RepalceProductRequest
+      allOf:
+        - $ref: '#/components/schemas/Product'
+
+    Product:
+      type: object
+      title: Product
+      properties:
+        productId:
+          type: string
+          minLength: 1
+          maxLength: 32
+          example: 507f1f77bcf86cd799439011
+        name:
+          type: string
+          description: ID del cliente dueño del producto
+          example: 5f7d8f9a3d6c4b1a2e3f4g5h
+        productType:
+          $ref: '#/components/schemas/ProductType'
+
+    ProductType:
+      type: object
+      properties:
+        id:
+          type: integer
+          minimum: 1
+          example: 5
+          description: Límite máximo de movimientos mensuales
+
+        name:
+          type: string
+          example: 2
+          description: Movimientos realizados en el mes actual
