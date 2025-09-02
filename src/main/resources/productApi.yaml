@@ -2,7 +2,7 @@ openapi: 3.0.1
 info:
   title: Product Service API
   description: API para gestión de productos bancarios (cuentas y créditos)
-  version: 1.0.0
+  version: 3.5.7
 servers:
   - url: http://localhost:8083
     description: Servidor local de desarrollo
@@ -17,13 +17,14 @@ paths:
       operationId: getProducts
       responses:
         '200':
-          description: Lista de cuentas de ahorro
+          description: Lista de productos activos
           content:
             application/json:
               schema:
                 type: array
                 items:
                   $ref: '#/components/schemas/GetProductsResponse'
+
     post:
       tags: [ Products ]
       summary: Crear un nuevo producto
@@ -44,6 +45,32 @@ paths:
 
 
   '/products/{productId}':
+    get:
+      tags: [ Products ]
+      summary: Obtener producto por Id
+      operationId: getProductById
+      parameters:
+        - name: productId
+          in: path
+          required: true
+          description: ID único del producto (formato UUID)
+          schema:
+            type: string
+            format: uuid
+            example: "4c0ea7d1-5564-45f5-beb7-ba9a89b5a191"
+      responses:
+        '200':
+          description: Producto obtenido
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GetProductsResponse'
+        '404':
+          description: Producto no encontrado
+        '400':
+          description: ID de producto inválido
+
+
     put:
       tags: [ Products ]
       summary: Actualizar producto
@@ -54,6 +81,7 @@ paths:
           required: true
           schema:
             type: string
+            format: uuid
       requestBody:
         required: true
         content:
@@ -63,11 +91,65 @@ paths:
       responses:
         '204':
           description: Producto actualizado
+        '404':
+          description: Producto no encontrado
+        '400':
+          description: ID de producto inválido
+
+  '/products/{productId}/parameters':
+    put:
+      tags: [ Products ]
+      summary: Actualizar parámetros del producto
+      operationId: addProductParameter
+      parameters:
+        - name: productId
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ProductParameter'
+      responses:
+        '204':
+          description: Parameter actualizado
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "Parámetro actualizado exitosamente"
+        '404':
+          description: Producto no encontrado
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "Producto no encontrado"
+        '400':
+          description: ID de producto inválido
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "ID de producto inválido"
 
   '/products/{productId}/remove':
-    post:
+    delete:
       tags: [ Products ]
-      summary: Eliminar producto como post
+      summary: Eliminar producto (borrado físico)
       operationId: removeProduct
       parameters:
         - name: productId
@@ -75,15 +157,30 @@ paths:
           required: true
           schema:
             type: string
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/ReplaceProductRequest'
+            format: uuid
       responses:
         '204':
           description: Producto eliminado
+
+  '/products/{productId}/deactivate':
+    patch:
+      tags: [ Products ]
+      summary: Desactivar producto (borrado lógico)
+      operationId: deactivateProduct
+      parameters:
+        - name: productId
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: Producto desactivado exitosamente
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DeactivateProductResponse'
 
 components:
   schemas:
@@ -101,46 +198,159 @@ components:
 
     CreateProductResponse:
       type: object
-      title: CreateProductRequest
+      title: CreateProductResponse
       properties:
         productId:
           type: string
-          minLength: 1
-          maxLength: 32
-          example: 507f1f77bcf86cd799439011
+          format: uuid
+          description: ID del del producto
+          example: 550e8400-e29b-41d4-a716-446655440000
 
     ReplaceProductRequest:
       type: object
-      title: RepalceProductRequest
       allOf:
         - $ref: '#/components/schemas/Product'
+
+    DeactivateProductResponse:
+      type: object
+      title: DeactivateProductResponse
+      properties:
+        productId:
+          type: string
+          format: uuid
+          description: ID del producto desactivado
+          example: 550e8400-e29b-41d4-a716-446655440000
+        status:
+          type: boolean
+          description: Nuevo estado del producto (false)
+          example: false
+        message:
+          type: string
+          description: Mensaje de confirmación
+          example: Producto desactivado exitosamente
 
     Product:
       type: object
       title: Product
+      required:
+        - name
       properties:
         productId:
           type: string
-          minLength: 1
-          maxLength: 32
-          example: 507f1f77bcf86cd799439011
+          format: uuid
+          description: ID del del producto
+          example: 550e8400-e29b-41d4-a716-446655440000
         name:
           type: string
-          description: ID del cliente dueño del producto
-          example: 5f7d8f9a3d6c4b1a2e3f4g5h
+          description: Nombre del producto
+          example: PersonalLoan
+        status:
+          type: boolean
+          description: Estado lógico del producto
+          example: true
         productType:
           $ref: '#/components/schemas/ProductType'
+        parameters:
+          type: array
+          items:
+            $ref: '#/components/schemas/ProductParameter'
+
 
     ProductType:
       type: object
       properties:
-        id:
+        productTypeId:
           type: integer
           minimum: 1
-          example: 5
-          description: Límite máximo de movimientos mensuales
-
+          description: ID del tipo de producto
+          example: 2
         name:
           type: string
+          minLength: 1
+          maxLength: 36
+          example: CreditProducts
+          description: Nombre del tipo de producto
+
+    ProductParameter:
+      title: ProductParameter
+      type: object
+      properties:
+        customerProfile:
+          type: string
+          minLength: 1
+          maxLength: 36
+          description: Perfil de cliente
+          example: INDIVIDUAL_VIP   #INDIVIDUAL_STANDARD,  INDIVIDUAL_VIP,  BUSINESS_PYME
+        maximumContracts:
+          type: integer
+          format: int32
+          minimum: 0
+          maximum: 99
+          example: 1
+        maximumHolders:
+          type: integer
+          format: int32
+          minimum: 0
+          maximum: 99
+          example: 1
+        maximumAuthorizedSignatories:
+          type: integer
+          format: int32
+          minimum: 0
+          maximum: 99
           example: 2
-          description: Movimientos realizados en el mes actual
+        maintenanceCommission:
+          type: number
+          format: decimal
+          minimum: 0
+          maximum: 999
+          example: 0
+        creditLimitRequired:
+          type: boolean
+          example: false
+        creditLimit:
+          type: number
+          format: decimal
+          minimum: 0
+          maximum: 99999999
+          example: 1000000.01
+        customerType:
+          type: array
+          example: [ "DNI" ]  #DNI o RUC
+          items:
+            type: string
+        movementParameters:
+          type: array
+          items:
+            $ref: '#/components/schemas/ProductParameterMovement'
+
+    ProductParameterMovement:
+      title: ProductParameterMovement
+      type: object
+      properties:
+        movementType:
+          type: string
+          minLength: 1
+          maxLength: 1
+          example: "D" #D=deposit, R=Retiro, P=Pago, C=Cargo de consumos
+        period:
+          type: string
+          example: "M"     #M=mensual, D=diario   , A = Anual
+        quantity:
+          type: integer
+          minimum: 0
+          maximum: 30
+          example: 1
+        movementDays:
+          type: array
+          items:
+            type: integer
+          example: [ 2, 15, 25 ]
+
+
+
+
+
+
+
+

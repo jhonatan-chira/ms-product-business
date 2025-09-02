@@ -7,17 +7,15 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.util.List;
-import java.util.UUID;
 
 @Getter
 @Setter
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class ProductDto {
-    private UUID productId;
-    private String name;
-    private ProductTypeDto productType;
-    private boolean status = true;
-    private List<ProductParameterDto> parameters;
+public class ProductParameterMovementDto {
+    private String movementType;
+    private String period;
+    private Integer quantity;
+    private List<Integer> movementDays;
 }
