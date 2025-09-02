@@ -149,16 +149,16 @@
                                 <validateSpec>true</validateSpec>
                                 <serializationLibrary>gson</serializationLibrary>
                                 <serializableModel>true</serializableModel>
-                                <!--                                <basePackage>app.restaurant.product.order</basePackage>-->
-                                <!--                                <apiPackage>app.restaurant.product.order.ws.rest</apiPackage>-->
-                                <!--                                <modelPackage>app.restaurant.product.order.model</modelPackage>-->
-                                <!--                                <configPackage>app.restaurant.product.order.config</configPackage>-->
+                                <!--                                <basePackage>com.nttdata.product.management.order</basePackage>-->
+                                <!--                                <apiPackage>com.nttdata.product.management.order.ws.rest</apiPackage>-->
+                                <!--                                <modelPackage>com.nttdata.product.management.order.model</modelPackage>-->
+                                <!--                                <configPackage>com.nttdata.product.management.order.config</configPackage>-->
                                 <reactive>true</reactive>
                                 <delegatePattern>false</delegatePattern>
                                 <interfaceOnly>true</interfaceOnly>
                                 <modelBuilder>true</modelBuilder>
                                 <!--suppress UnresolvedMavenProperty -->
-                                <additionalModelTypeAnnotations>@lombok.Builder; @lombok.NoArgsConstructor;
+                                <additionalModelTypeAnnotations>@lombok.Builder;
                                     @lombok.AllArgsConstructor
                                 </additionalModelTypeAnnotations>
                                 <dateLibrary>java8</dateLibrary>

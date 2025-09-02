@@ -2,13 +2,16 @@ package com.nttdata.product.management.controller.mapper;
 
 import com.nttdata.product.management.model.api.CreateProductRequest;
 import com.nttdata.product.management.model.api.CreateProductResponse;
+import com.nttdata.product.management.model.api.DeactivateProductResponse;
 import com.nttdata.product.management.model.api.GetProductsResponse;
-import com.nttdata.product.management.model.api.Product;
+import com.nttdata.product.management.model.api.ProductParameter;
 import com.nttdata.product.management.model.api.ProductType;
 import com.nttdata.product.management.model.api.ReplaceProductRequest;
 import com.nttdata.product.management.model.dto.ProductDto;
-import com.nttdata.product.management.model.dto.ProductTypeDTO;
+import com.nttdata.product.management.model.dto.ProductParameterDto;
+import com.nttdata.product.management.model.dto.ProductTypeDto;
 import org.mapstruct.Mapper;
+import org.mapstruct.Mapping;
 import org.mapstruct.ReportingPolicy;
 import org.springframework.stereotype.Component;
 
@@ -28,11 +31,12 @@ public interface ProductControllerMapper {
 
     GetProductsResponse toGetProductsResponse(ProductDto productDto);
 
-    ProductDto toDto(Product product);
+    ProductTypeDto toDto(ProductType productType);
 
-    Product toEntity(ProductDto productDto);
+    ProductType toEntity(ProductTypeDto productTypeDTO);
 
-    ProductTypeDTO toDto(ProductType productType);
+    @Mapping(target = "message", expression = "java(\"Producto desactivado exitosamente\")")
+    DeactivateProductResponse toDeactivateProductResponse(ProductDto productDto);
 
-    ProductType toEntity(ProductTypeDTO productTypeDTO);
+    ProductParameterDto toProductParameterDto(ProductParameter productParameter);
 }
