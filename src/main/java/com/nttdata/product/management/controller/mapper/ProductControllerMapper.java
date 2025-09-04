@@ -15,28 +15,81 @@ import org.mapstruct.Mapping;
 import org.mapstruct.ReportingPolicy;
 import org.springframework.stereotype.Component;
 
+/**
+ * Mapper para convertir entre entidades de dominio y objetos de transferencia de datos (DTOs)
+ * relacionados con productos. Utiliza MapStruct para la generación automática de implementaciones.
+ */
 @Component
 @Mapper(componentModel = "spring",
-        unmappedTargetPolicy = ReportingPolicy.IGNORE,
-        imports = {java.time.ZoneOffset.class,
-                java.time.OffsetDateTime.class}
+    unmappedTargetPolicy = ReportingPolicy.IGNORE,
+    imports = {java.time.ZoneOffset.class,
+        java.time.OffsetDateTime.class}
 )
 public interface ProductControllerMapper {
 
-    CreateProductResponse toCreateProductResponse(ProductDto productDto);
+  /**
+   * Convierte un ProductDto en una respuesta de creación de producto.
+   *
+   * @param productDto DTO del producto.
+   * @return Respuesta de creación de producto.
+   */
+  CreateProductResponse toCreateProductResponse(ProductDto productDto);
 
-    ProductDto toProductDto(CreateProductRequest createProductRequest);
+  /**
+   * Convierte una solicitud de creación de producto en un DTO de producto.
+   *
+   * @param createProductRequest Solicitud de creación de producto.
+   * @return DTO del producto.
+   */
+  ProductDto toProductDto(CreateProductRequest createProductRequest);
 
-    ProductDto toProductDto(ReplaceProductRequest request);
+  /**
+   * Convierte una solicitud de reemplazo de producto en un DTO de producto.
+   *
+   * @param request Solicitud de reemplazo de producto.
+   * @return DTO del producto.
+   */
+  ProductDto toProductDto(ReplaceProductRequest request);
 
-    GetProductsResponse toGetProductsResponse(ProductDto productDto);
+  /**
+   * Convierte un ProductDto en una respuesta de obtención de productos.
+   *
+   * @param productDto DTO del producto.
+   * @return Respuesta de obtención de productos.
+   */
+  GetProductsResponse toGetProductsResponse(ProductDto productDto);
 
-    ProductTypeDto toDto(ProductType productType);
+  /**
+   * Convierte un ProductType en un DTO de tipo de producto.
+   *
+   * @param productType Tipo de producto.
+   * @return DTO de tipo de producto.
+   */
+  ProductTypeDto toDto(ProductType productType);
 
-    ProductType toEntity(ProductTypeDto productTypeDTO);
+  /**
+   * Convierte un DTO de tipo de producto en un ProductType.
+   *
+   * @param productTypeDto DTO de tipo de producto.
+   * @return Tipo de producto.
+   */
+  ProductType toEntity(ProductTypeDto productTypeDto);
 
-    @Mapping(target = "message", expression = "java(\"Producto desactivado exitosamente\")")
-    DeactivateProductResponse toDeactivateProductResponse(ProductDto productDto);
+  /**
+   * Convierte un ProductDto en una respuesta de desactivación de producto.
+   * Incluye un mensaje personalizado.
+   *
+   * @param productDto DTO del producto.
+   * @return Respuesta de desactivación de producto.
+   */
+  @Mapping(target = "message", expression = "java(\"Producto desactivado exitosamente\")")
+  DeactivateProductResponse toDeactivateProductResponse(ProductDto productDto);
 
-    ProductParameterDto toProductParameterDto(ProductParameter productParameter);
+  /**
+   * Convierte un parámetro de producto en un DTO de parámetro de producto.
+   *
+   * @param productParameter Parámetro del producto.
+   * @return DTO de parámetro de producto.
+   */
+  ProductParameterDto toProductParameterDto(ProductParameter productParameter);
 }

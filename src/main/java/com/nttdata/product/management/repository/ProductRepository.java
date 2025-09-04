@@ -1,12 +1,21 @@
 package com.nttdata.product.management.repository;
 
 import com.nttdata.product.management.model.entity.ProductEntity;
+import java.util.UUID;
 import org.springframework.data.mongodb.repository.ReactiveMongoRepository;
 import reactor.core.publisher.Flux;
 
-import java.util.UUID;
-
+/**
+ * Repositorio para la gestión de entidades de productos.
+ * Extiende ReactiveMongoRepository para proporcionar operaciones reactivas con MongoDB.
+ */
 public interface ProductRepository extends ReactiveMongoRepository<ProductEntity, UUID> {
-    //Mono<ProductEntity> findByProductId(UUID productId);
-    Flux<ProductEntity> findByStatus(Boolean status);
+
+  /**
+   * Busca productos por su estado.
+   *
+   * @param status el estado de los productos a buscar (true para activos, false para inactivos)
+   * @return un Flux que emite las entidades ProductEntity encontradas
+   */
+  Flux<ProductEntity> findByStatus(Boolean status);
 }
