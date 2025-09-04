@@ -2,7 +2,6 @@ package com.nttdata.product.management.controller;
 
 import com.nttdata.product.management.controller.mapper.ProductControllerMapper;
 import com.nttdata.product.management.exception.FriendlyException;
-import com.nttdata.product.management.model.api.AddProductParameter204Response;
 import com.nttdata.product.management.model.api.CreateProductRequest;
 import com.nttdata.product.management.model.api.CreateProductResponse;
 import com.nttdata.product.management.model.api.DeactivateProductResponse;
@@ -35,7 +34,7 @@ public class ProductController implements ProductsApi {
                 .map(mapper::toProductDto)
                 .flatMap(productService::create)
                 .map(mapper::toCreateProductResponse)
-                .doOnError(throwable -> new FriendlyException(throwable.getMessage()).buildAsMono())
+                .onErrorResume(throwable -> new FriendlyException(throwable.getMessage()).buildAsMono())
                 .map(response -> ResponseEntity.status(HttpStatus.CREATED)
                         .body(response));
     }
@@ -43,6 +42,7 @@ public class ProductController implements ProductsApi {
     @Override
     public Mono<ResponseEntity<Flux<GetProductsResponse>>> getProducts(ServerWebExchange exchange) {
         return productService.getAll()
+                .onErrorResume(throwable -> new FriendlyException(throwable.getMessage()).buildAsMono())
                 .map(mapper::toGetProductsResponse)
                 .collectList()
                 .flatMap(list -> {
@@ -51,7 +51,9 @@ public class ProductController implements ProductsApi {
                     } else {
                         return Mono.just(ResponseEntity.ok(Flux.fromIterable(list)));
                     }
-                });
+                })
+
+                ;
     }
 
     @Override
@@ -59,6 +61,7 @@ public class ProductController implements ProductsApi {
         return replaceProductRequest
                 .map(mapper::toProductDto)
                 .flatMap(dto -> productService.update(productId, dto))
+                .onErrorResume(throwable -> new FriendlyException(throwable.getMessage()).buildAsMono())
                 .thenReturn(ResponseEntity.noContent().build());
     }
 
@@ -68,19 +71,13 @@ public class ProductController implements ProductsApi {
                 .thenReturn(ResponseEntity.noContent().build());
     }
 
-//    @Override
-//    public Mono<ResponseEntity<Void>> addProductParameter(UUID productId, Mono<ProductParameter> productParameter, ServerWebExchange exchange) {
-//        return productParameter
-//                .map(mapper::toProductParameterDto)
-//                .flatMap(parameterDto -> productService.updateParameters(productId, parameterDto)
-//                        .thenReturn(ResponseEntity.noContent().build()));
-//        //.then(Mono.just(ResponseEntity.noContent().build()));
-//    }
-
-
     @Override
-    public Mono<ResponseEntity<AddProductParameter204Response>> addProductParameter(UUID productId, Mono<ProductParameter> productParameter, ServerWebExchange exchange) {
-        return ProductsApi.super.addProductParameter(productId, productParameter, exchange);
+    public Mono<ResponseEntity<Void>> addProductParameter(UUID productId, Flux<ProductParameter> productParameter, ServerWebExchange exchange) {
+        return productParameter
+                .map(mapper::toProductParameterDto)
+                .collectList()
+                .flatMap(parameterDto -> productService.updateParameters(productId, parameterDto)
+                        .thenReturn(ResponseEntity.noContent().build()));
     }
 
     @Override
