@@ -1,0 +1,31 @@
+{
+  "name": "SAVINGS_ACCOUNT",
+  "status": true,
+  "productType": {
+    "productTypeId": 1,
+    "name": "LIABILITIES"
+  },
+  "parameters": [
+    {
+      "customerProfile": "STANDARD",
+      "maximumContracts": 1,
+      "maintenanceCommission": 0,
+      "creditLimitRequired": false,
+      "customerType": [
+        "DNI"
+      ],
+      "movementParameters": [
+        {
+          "movementType": "D",
+          "period": "M",
+          "quantity": 1,
+          "movementDays": [
+            2,
+            15,
+            25
+          ]
+        }
+      ]
+    }
+  ]
+}

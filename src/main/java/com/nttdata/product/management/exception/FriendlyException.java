@@ -10,6 +10,7 @@ import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
+import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 import java.util.ArrayList;
@@ -72,5 +73,9 @@ public class FriendlyException extends RuntimeException {
 
     public <T> Mono<T> buildAsMono() {
         return Mono.error(this);
+    }
+
+    public <T> Flux<T> buildAsFlux() {
+        return Flux.error(this);
     }
 }

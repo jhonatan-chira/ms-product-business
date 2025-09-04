@@ -14,6 +14,7 @@ import org.webjars.NotFoundException;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
+import java.util.List;
 import java.util.UUID;
 
 import static java.util.Objects.isNull;
@@ -74,11 +75,11 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    public Mono<ProductDto> updateParameters(UUID productId, ProductParameterDto productParameterDto) {
+    public Mono<ProductDto> updateParameters(UUID productId, List<ProductParameterDto> productParameterDtos) {
         return productRepository.findById(productId)
                 .switchIfEmpty(Mono.error(new NotFoundException("Product not found with id: " + productId)))
                 .map(existingProduct -> {
-                    mapper.updateProductParametersFromDto(productParameterDto, existingProduct);
+                    existingProduct.setParameters(mapper.toProductParameterEntities(productParameterDtos));
                     return existingProduct;
                 })
                 .flatMap(productRepository::save)
