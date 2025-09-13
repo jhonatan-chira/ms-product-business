@@ -22,6 +22,7 @@ public class ProductControllerMockBundle {
    * @return Un objeto `ProductDto` con los datos simulados.
    * @throws IOException Si ocurre un error al leer el archivo JSON.
    */
+
   public static ProductDto getReplaceProductRequest() throws IOException {
     ObjectMapper objectMapper = new ObjectMapper();
     return objectMapper.readValue(
