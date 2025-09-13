@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+<project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xmlns="http://maven.apache.org/POM/4.0.0"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <parent>
@@ -150,7 +151,8 @@
                             <goal>generate</goal>
                         </goals>
                         <configuration>
-                            <inputSpec>${project.basedir}/src/main/resources/productApi.yaml</inputSpec>
+                            <inputSpec>${project.basedir}/src/main/resources/productApi.yaml
+                            </inputSpec>
                             <generatorName>spring</generatorName>
                             <generateSupportingFiles>true</generateSupportingFiles>
                             <generateApiTests>false</generateApiTests>
@@ -160,7 +162,7 @@
                             <apiPackage>com.nttdata.product.management.controller</apiPackage>
                             <modelPackage>com.nttdata.product.management.model.api</modelPackage>
                             <supportingFilesToGenerate>ApiUtil.java</supportingFilesToGenerate>
-                            <modelDefaultConstructor>false</modelDefaultConstructor>
+                            <!--                            <modelDefaultConstructor>false</modelDefaultConstructor>-->
                             <configOptions>
                                 <modelDefaultConstructor>false</modelDefaultConstructor>
                                 <validateSpec>true</validateSpec>
@@ -175,7 +177,8 @@
                                 <interfaceOnly>true</interfaceOnly>
                                 <modelBuilder>true</modelBuilder>
                                 <!--suppress UnresolvedMavenProperty -->
-                                <generateConstructorWithRequiredArgs>true</generateConstructorWithRequiredArgs>
+                                <generateConstructorWithRequiredArgs>true
+                                </generateConstructorWithRequiredArgs>
                                 <additionalModelTypeAnnotations>@lombok.Builder;
                                     @lombok.AllArgsConstructor
                                 </additionalModelTypeAnnotations>
@@ -212,6 +215,44 @@
                     </execution>
                 </executions>
             </plugin>
+            <!--CheckStyle-->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-checkstyle-plugin</artifactId>
+                <version>3.6.0</version>
+                <executions>
+                    <execution>
+                        <id>validate</id>
+                        <phase>validate</phase>
+                        <goals>
+                            <goal>check</goal>
+                        </goals>
+                    </execution>
+                </executions>
+                <configuration>
+                    <!--<configuLocation>${baseDir}/src/main/resources/checkstyle/checkstyle.xml</configuLocation>-->
+                    <configLocation>checkstyle.xml</configLocation>
+                    <consoleOutput>true</consoleOutput>
+                    <linkXRef>false</linkXRef>
+                    <includeTestSourceDirectory>true</includeTestSourceDirectory>
+                    <logViolationsToConsole>true</logViolationsToConsole>
+                    <violationSeverity>warning</violationSeverity>
+                    <excludes>target/**</excludes>
+                    <!--
+                    <exclude>
+                        com/omernaci/checkstyleleexample/CheckstyleExampleApplication.java
+                    </exclude>
+                    -->
+                </configuration>
+                <dependencies>
+                    <dependency>
+                        <groupId>com.puppycrawl.tools</groupId>
+                        <artifactId>checkstyle</artifactId>
+                        <version>10.26.1</version>
+                    </dependency>
+                </dependencies>
+            </plugin>
+            <!--CheckStyle-->
         </plugins>
         <pluginManagement>
             <plugins>

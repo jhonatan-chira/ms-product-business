@@ -7,6 +7,9 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+/**
+ * ProductTypeDto.
+ */
 @Getter
 @Setter
 @Builder
@@ -14,6 +17,6 @@ import lombok.Setter;
 @NoArgsConstructor
 @EqualsAndHashCode
 public class ProductTypeDto {
-    private Integer productTypeId;
-    private String name;
+  private Integer productTypeId;
+  private String name;
 }

@@ -2,9 +2,9 @@ openapi: 3.0.1
 info:
   title: Product Service API
   description: API para gestión de productos bancarios (cuentas y créditos)
-  version: 3.5.9
+  version: 3.5.10
 servers:
-  - url: http://localhost:8083
+  - url: http://localhost:8083/api/v1
     description: Servidor local de desarrollo
 tags:
   - name: Products

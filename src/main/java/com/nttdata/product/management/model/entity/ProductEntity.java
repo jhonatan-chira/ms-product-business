@@ -1,5 +1,8 @@
 package com.nttdata.product.management.model.entity;
 
+import java.io.Serializable;
+import java.util.List;
+import java.util.UUID;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -11,10 +14,9 @@ import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.Field;
 import org.springframework.data.mongodb.core.mapping.FieldType;
 
-import java.io.Serializable;
-import java.util.List;
-import java.util.UUID;
-
+/**
+ * ProductEntity.
+ */
 @Data
 @SuperBuilder
 @NoArgsConstructor
@@ -23,12 +25,12 @@ import java.util.UUID;
 @TypeAlias("ProductEntity")
 @EqualsAndHashCode(callSuper = false)
 public class ProductEntity implements Serializable {
-    @Id
-    @Field(targetType = FieldType.STRING, name = "_id")
-    private UUID productId;
-    private String name;
-    private ProductTypeEntity productType;
-    private boolean status = true;
-    private List<ProductParameterEntity> parameters;
+  @Id
+  @Field(targetType = FieldType.STRING, name = "_id")
+  private UUID productId;
+  private String name;
+  private ProductTypeEntity productType;
+  private boolean status = true;
+  private List<ProductParameterEntity> parameters;
 
 }
